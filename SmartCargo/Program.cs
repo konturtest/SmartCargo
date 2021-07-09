@@ -1,45 +1,159 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SmartCargo
 {
-	class Program
-	{
-		public static void Main()
-		{
+    class Program
+    {
+        public static void Main()
+        {
 
-			Console.WriteLine("Введите необходимую информацию о грузах — через ; без пробелов. Если вы закончили, введите слово END.");
+            Console.WriteLine("Введите необходимую информацию о грузах — через ; без пробелов. Если вы закончили, введите слово END.");
 
-			string[] cargoParams = new string[] { "NAME", "WEIGHT", "DATE_BEGIN", "DATE_END", "IMPORTANCE_LEVEL" };
+            string[] cargoParams = { "NAME", "WEIGHT", "DATE_BEGIN", "DATE_END", "IMPORTANCE_LEVEL" };
 
-			List<string> unsortedCargoList = new List<string>();
+            List<string> cargoInfo = new List<string>();
 
-				while (true)
-					{
-						var line = Console.ReadLine();
-						if (line == "END") break;
-					unsortedCargoList.Add(line);
-					}
+            while (true)
+            {
+                var line = Console.ReadLine();
+                if (line == "END") break;
+                cargoInfo.Add(line);
+            }
 
-				string [][] unsortedCargoSplitList = new string[unsortedCargoList.Count][];
+            string[][] unsortedСargos = new string[cargoInfo.Count][];
+            
+            int index = 0;
+            foreach (var item in cargoInfo)
+            {
+                if (item == "")
+                    continue;
+                string[] param = item.Split(new[] { ';' });
+                unsortedСargos[index] = param;
+                index++;
+            }
+            Console.WriteLine("Введите параметр, по которому необходимо отсортировать:");
+            for (int i = 0; i < cargoParams.Length; i++)
+                Console.WriteLine(cargoParams[i] + " ");
+            var sortParam = Console.ReadLine();
+            Console.WriteLine("Введите порядок сортировки: ASC, DESC");
+            var sortingOrder = Console.ReadLine();
+            int numberParametr = 0;
+            switch (sortParam)
+            {
+                case "NAME":
+                    WordSort(unsortedСargos, 0, sortingOrder);
+                    break;
+                case "WEIGHT":
+                    BubbleSort(unsortedСargos, 1, sortingOrder); 
+                    break;
+                case "DATE_BEGIN":
+                    WordSort(unsortedСargos, 2, sortingOrder);
+                    break;
+                case "DATE_END":
+                    WordSort(unsortedСargos, 3, sortingOrder);
+                    break;
+                case "IMPORTANCE_LEVEL":
+                    WordSort(unsortedСargos, 4, sortingOrder);
+                    break;
+            }
+        }
 
-				foreach (var item in unsortedCargoList)
-				{
+        private static void WordSort(string[][] unsortedСargos, int numberParametr, string sortingOrder)
+        {
+            switch (sortingOrder)
+            {
+                case "ASC":
+                    WordSortAsc(unsortedСargos, numberParametr);
+                    break;
+                case "DESC":
+                    WordSortDesc(unsortedСargos, numberParametr);
+                    break;
+            }
+        }
 
-					string[] param = item.Split(new char[] { ';' });
-			}
+        private static void WordSortAsc(string[][] unsortedСargos, int numberParametr)
+        {
+            for (int i = 0; i < unsortedСargos.Length; i++)
+            for (int j = 0; j < unsortedСargos.Length - 1; j++)
+                if (string.CompareOrdinal(unsortedСargos[j][numberParametr], unsortedСargos[j + 1][numberParametr])>0)
+                {
+                    string[] t = unsortedСargos[j + 1];
+                    unsortedСargos[j + 1] = unsortedСargos[j];
+                    unsortedСargos[j] = t;
+                }
 
-			// Следующие шаги:в цикле foreach сохранять Param, потому что в следующем цикле он пропадёт. Сохранить можно в list2
+            OutputSortedResult(unsortedСargos);
+        }
 
-			foreach (var item in unsortedCargoList)
-				Console.WriteLine(item);
-			//этот foreach нужен будет после сортировки
+        private static void WordSortDesc(string[][] unsortedСargos, int numberParametr)
+        {
+            for (int i = 0; i < unsortedСargos.Length; i++)
+            for (int j = 0; j < unsortedСargos.Length - 1; j++)
+                if (String.CompareOrdinal(unsortedСargos[j][numberParametr], unsortedСargos[j + 1][numberParametr]) < 0)
+                {
+                    string[] t = unsortedСargos[j + 1];
+                    unsortedСargos[j + 1] = unsortedСargos[j];
+                    unsortedСargos[j] = t;
+                }
 
-			//сделать так, чтобы после парсинга по ; распарсенные данные сохранялись в массив
-			//попробовать сортировку - отсортироват по одному типу параметорв (колонке)
+            OutputSortedResult(unsortedСargos);
+        }
 
-		}
-	}
+        private static void OutputSortedResult(string[][] unsortedСargos)
+        {
+            int index = 0;
+            foreach (var item in unsortedСargos)
+            {
+                Console.WriteLine("ГРУЗ " + index);
+                index++;
+                foreach (var item2 in item)
+                    Console.WriteLine(item2);
+            }
+        }
+
+        private static void BubbleSort(string[][] unsortedСargos, int numberParametr, string sortingOrder)
+        {
+            switch (sortingOrder)
+            {
+                case "ASC":
+                    BubbleSortAsc(unsortedСargos, numberParametr);
+                    break;
+                case "DESC":
+                    BubbleSortDesc(unsortedСargos, numberParametr);
+                    break;
+            }
+        }
+
+        private static void BubbleSortAsc(string[][] unsortedСargos, int numberParametr)
+        {
+            for (int i = 0; i < unsortedСargos.Length; i++)
+                for (int j = 0; j < unsortedСargos.Length - 1; j++)
+                    if (Convert.ToDouble(unsortedСargos[j][numberParametr]) > Convert.ToDouble(unsortedСargos[j + 1][numberParametr]))
+                    {
+                        string[] t = unsortedСargos[j + 1];
+                        unsortedСargos[j + 1] = unsortedСargos[j];
+                        unsortedСargos[j] = t;
+                    }
+
+            OutputSortedResult(unsortedСargos);
+        }
+
+        private static void BubbleSortDesc(string[][] unsortedСargos, int numberParametr)
+        {
+            for (int i = 0; i < unsortedСargos.Length; i++)
+            for (int j = 0; j < unsortedСargos.Length - 1; j++)
+                if (Convert.ToDouble(unsortedСargos[j][numberParametr]) < Convert.ToDouble(unsortedСargos[j + 1][numberParametr]))
+                {
+                    string[] t = unsortedСargos[j + 1];
+                    unsortedСargos[j + 1] = unsortedСargos[j];
+                    unsortedСargos[j] = t;
+                }
+
+            OutputSortedResult(unsortedСargos);
+        }
+    }
 }
 
 
