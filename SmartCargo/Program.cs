@@ -12,29 +12,31 @@ namespace SmartCargo
 
 			string[] cargoParams = new string[] { "NAME", "WEIGHT", "DATE_BEGIN", "DATE_END", "IMPORTANCE_LEVEL" };
 
-			List<string> unsortedList = new List<string>();
+			List<string> unsortedCargoList = new List<string>();
 
 				while (true)
 					{
 						var line = Console.ReadLine();
 						if (line == "END") break;
-					unsortedList.Add(line);
+					unsortedCargoList.Add(line);
 					}
 
-				foreach (var item in unsortedList)
-					Console.WriteLine(item);
-				//этот foreach нужен будет после сортировки
+				string [][] unsortedCargoSplitList = new string[unsortedCargoList.Count][];
 
-				string [][] list2 = new string[unsortedList.Count][];
-
-				foreach (var item in unsortedList)
+				foreach (var item in unsortedCargoList)
 				{
 
 					string[] param = item.Split(new char[] { ';' });
 			}
-				
-// Следующие шаги:в цикле foreach сохранять Param, потому что в следующем цикле он пропадёт. Сохранить можно в list2
 
+			// Следующие шаги:в цикле foreach сохранять Param, потому что в следующем цикле он пропадёт. Сохранить можно в list2
+
+			foreach (var item in unsortedCargoList)
+				Console.WriteLine(item);
+			//этот foreach нужен будет после сортировки
+
+			//сделать так, чтобы после парсинга по ; распарсенные данные сохранялись в массив
+			//попробовать сортировку - отсортироват по одному типу параметорв (колонке)
 
 		}
 	}
